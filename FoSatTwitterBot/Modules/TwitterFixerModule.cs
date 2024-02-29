@@ -23,35 +23,39 @@ namespace FoSatTwitterBot.Modules
             if (!message.Embeds.Any()) { return; }
             try
             {
-                var twitterMatch = message.Embeds.FirstOrDefault(url => url.Url.Contains("x.com", StringComparison.CurrentCultureIgnoreCase) || url.Url.Contains("twitter.com", StringComparison.CurrentCultureIgnoreCase) 
+                var twitterMatch = message.Embeds.Where(url => url.Url.Contains("x.com", StringComparison.CurrentCultureIgnoreCase) || url.Url.Contains("twitter.com", StringComparison.CurrentCultureIgnoreCase) 
                     && !url.Url.Contains("fixupx.com", StringComparison.CurrentCultureIgnoreCase) && !url.Url.Contains("fxtwitter.com", StringComparison.CurrentCultureIgnoreCase));
-                if (twitterMatch != default)
+                if (twitterMatch.Any())
                 {
-                    var twitterURL = new string(twitterMatch.Url);
-                    if (twitterURL.Contains("x.com"))
+                    var twitterURLs = new List<string>();
+
+                    foreach (var match in twitterMatch)
                     {
-                        twitterURL = twitterURL.Replace("x.com", "fixupx.com");
-                    }
-                    else
-                    {
-                        twitterURL = twitterURL.Replace("twitter.com", "fxtwitter.com");
+                        var twitterURL = new string(match.Url);
+                        if (twitterURL.Contains("x.com"))
+                        {
+                            twitterURL = twitterURL.Replace("x.com", "fixupx.com");
+                        }
+                        else
+                        {
+                            twitterURL = twitterURL.Replace("twitter.com", "fxtwitter.com");
+                        }
+                        twitterURLs.Add(twitterURL);
                     }
 
-                    if (message.Embeds.Count == 1 && !message.Content.Contains(" ", StringComparison.CurrentCulture))
-                    {
-                        await message.Channel.SendMessageAsync(twitterURL);
-                    }
-                    else
-                    {
-                        var spaceSplit = message.Content.Split(' ');
-                        var newSplitList = new List<string>();
-                        foreach (var space in spaceSplit)
-                        {
-                            newSplitList.AddRange(space.Split('\n'));
-                        }
-                        var urlToIgnore = newSplitList.First(url => url.Contains("twitter.com", StringComparison.CurrentCultureIgnoreCase) || url.Contains("x.com", StringComparison.CurrentCultureIgnoreCase));
-                        await message.Channel.SendMessageAsync($"{(message.Author as SocketGuildUser).Nickname} Sent: " + message.Content.Replace(urlToIgnore, twitterURL));
-                    }
+                     var spaceSplit = message.Content.Split(' ');
+                     var newSplitList = new List<string>();
+                     foreach (var space in spaceSplit)
+                     {
+                         newSplitList.AddRange(space.Split('\n'));
+                     }
+                     var urlToIgnore = newSplitList.Where(url => url.Contains("twitter.com", StringComparison.CurrentCultureIgnoreCase) || url.Contains("x.com", StringComparison.CurrentCultureIgnoreCase));
+                     var newMessageContent = message.Content;
+                     foreach (var url in urlToIgnore)
+                     {
+                         newMessageContent = newMessageContent.Replace(url, twitterURLs.First(twitterURL => twitterURL.Split(".com")[1] == url.Split(".com")[1]));
+                     }
+                     await message.Channel.SendMessageAsync($"{(message.Author as SocketGuildUser).Nickname} Sent: " + newMessageContent);
 
                     await message.DeleteAsync();
                 }
