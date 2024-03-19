@@ -19,7 +19,7 @@ var client = new DiscordSocketClient(socketConfig);
 using IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration(config =>
     {
-        config.AddJsonFile(Directory.GetCurrentDirectory() + "\\config.json", false);       // Add the config file to IConfiguration variables
+        config.AddJsonFile(Directory.GetCurrentDirectory() + "/config.json", false);       // Add the config file to IConfiguration variables
     })
     .ConfigureServices(services =>
     {
