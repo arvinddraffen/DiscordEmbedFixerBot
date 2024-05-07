@@ -7,8 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Net.NetworkInformation;
 
-Console.WriteLine("Hello, World!");
-
 var socketConfig = new DiscordSocketConfig
 {
     GatewayIntents = Discord.GatewayIntents.AllUnprivileged | Discord.GatewayIntents.MessageContent
