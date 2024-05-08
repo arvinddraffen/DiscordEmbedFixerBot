@@ -79,7 +79,16 @@ namespace FoSatTwitterBot.Modules
                     {
                         newMessageContent = newMessageContent.Replace(url, redditURLs.First(redditURL => redditURL.Split(".com")[1] == url.Split(".com")[1]));
                     }
-                    message.Channel.SendMessageAsync($"{(message.Author as SocketGuildUser).Nickname} Sent: " + newMessageContent);
+
+                    // if original message was replying to a message, have the bot reply to the same message
+                    if (message.Reference != null)
+                    {
+                        message.Channel.SendMessageAsync($"{(message.Author as SocketGuildUser).Nickname} Sent: " + newMessageContent, messageReference: message.Reference);
+                    }
+                    else
+                    {
+                        message.Channel.SendMessageAsync($"{(message.Author as SocketGuildUser).Nickname} Sent: " + newMessageContent);
+                    }
 
                     message.DeleteAsync();
                 }
