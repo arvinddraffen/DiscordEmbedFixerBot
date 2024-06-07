@@ -16,16 +16,16 @@ using System.Linq;
 namespace FoSatTwitterBot.Modules
 {
     [Discord.Interactions.RequireBotPermission(ChannelPermission.ManageMessages)]
-    internal class TwitterFixerModule : InteractionModuleBase<SocketInteractionContext>
+    internal class URLFixerModule : InteractionModuleBase<SocketInteractionContext>
     { 
-        internal async Task FixTwitterMessage(IMessage message, int runCount = 0)
+        internal async Task FixMessage(IMessage message, int runCount = 0)
         {
             if (!message.Embeds.Any()) 
             { 
                 if (runCount < 5) 
                 {
                     await Task.Delay(1000);
-                    await FixTwitterMessage(await message.Channel.GetMessageAsync(message.Id), ++runCount); 
+                    await FixMessage(await message.Channel.GetMessageAsync(message.Id), ++runCount); 
                 }
                 return;
             }
@@ -60,7 +60,17 @@ namespace FoSatTwitterBot.Modules
                     }
                 }
 
-                if (redditMatch.Any() || twitterMatch.Any())
+                var eBayMatch = message.Embeds.Where(url => url.Url.Contains("ebay.com", StringComparison.CurrentCultureIgnoreCase));
+                var eBayURLs = new List<string>();
+                if (eBayMatch.Any())
+                {
+                    foreach (var match in eBayMatch)
+                    {
+                        eBayURLs.Add(match.Url.Substring(0, match.Url.IndexOf('?')));
+                    }
+                }
+
+                if (redditMatch.Any() || twitterMatch.Any() || eBayMatch.Any())
                 {
                     var spaceSplit = message.Content.Split(' ');
                     var newSplitList = new List<string>();
@@ -78,6 +88,11 @@ namespace FoSatTwitterBot.Modules
                     foreach (var url in redditToIngore)
                     {
                         newMessageContent = newMessageContent.Replace(url, redditURLs.First(redditURL => redditURL.Split(".com")[1] == url.Split(".com")[1]));
+                    }
+                    var eBayToIgnore = newSplitList.Where(url => url.Contains("ebay.com", StringComparison.CurrentCultureIgnoreCase));
+                    foreach (var url in eBayToIgnore)
+                    {
+                        newMessageContent = newMessageContent.Replace(url, eBayURLs.First(eBayURL => url.Contains(eBayURL)));
                     }
 
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
