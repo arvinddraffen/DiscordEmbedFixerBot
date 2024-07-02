@@ -70,7 +70,17 @@ namespace FoSatTwitterBot.Modules
                     }
                 }
 
-                if (redditMatch.Any() || twitterMatch.Any() || eBayMatch.Any())
+                var instagramMatch = message.Embeds.Where(url => url.Url.Contains("instagram.com", StringComparison.CurrentCultureIgnoreCase));
+                var instagramURLs = new List<string>();
+                if (instagramMatch.Any())
+                {
+                    foreach (var match in instagramMatch)
+                    {
+                        instagramURLs.Add(match.Url.Replace("instagram.com", "ddinstagram.com"));
+                    }
+                }
+
+                if (redditMatch.Any() || twitterMatch.Any() || eBayMatch.Any() || instagramMatch.Any())
                 {
                     var spaceSplit = message.Content.Split(' ');
                     var newSplitList = new List<string>();
@@ -94,9 +104,13 @@ namespace FoSatTwitterBot.Modules
                     {
                         newMessageContent = newMessageContent.Replace(url, eBayURLs.First(eBayURL => url.Contains(eBayURL)));
                     }
-
+                    var instagramToIgnore = newSplitList.Where(url => url.Contains("instagram.com", StringComparison.CurrentCultureIgnoreCase));
+                    foreach (var url in instagramToIgnore)
+                    {
+                        newMessageContent = newMessageContent.Replace(url, instagramURLs.First(instagramURL => instagramURL.Split(".com")[1] == url.Split(".com")[1]));
+                    }
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
-                    await message.Channel.SendMessageAsync($"{(message.Author as SocketGuildUser).Nickname} Sent: " + newMessageContent, messageReference: message.Reference);
+                    await message.Channel.SendMessageAsync($"{((message.Author as SocketGuildUser).Nickname == "" ? (message.Author as SocketGuildUser).DisplayName : (message.Author as SocketGuildUser).Nickname)} Sent: " + newMessageContent, messageReference: message.Reference);
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 
                     await message.DeleteAsync();
