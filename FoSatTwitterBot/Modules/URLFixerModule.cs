@@ -20,6 +20,10 @@ namespace FoSatTwitterBot.Modules
     { 
         internal async Task FixMessage(IMessage message, int runCount = 0)
         {
+            if (message.Content.Contains("$IGNORE$"))
+            {
+                return;
+            }
             if (!message.Embeds.Any()) 
             { 
                 if (runCount < 5) 
