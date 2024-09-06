@@ -18,10 +18,19 @@ namespace FoSatTwitterBot.Modules
     [Discord.Interactions.RequireBotPermission(ChannelPermission.ManageMessages)]
     internal class URLFixerModule : InteractionModuleBase<SocketInteractionContext>
     { 
+        List<(IMessage orignalMessage,IMessage fixedMessage)> messages = new List<(IMessage, IMessage)>();
         internal async Task FixMessage(IMessage message, int runCount = 0)
         {
             if (message.Content.Contains("$IGNORE$"))
             {
+                var prevMesssage = messages.FirstOrDefault(msg => msg.orignalMessage.Author.Id == message.Author.Id && msg.orignalMessage.Channel.Id == message.Channel.Id);
+                if (prevMesssage != default)
+                {
+                    messages.Remove(prevMesssage);
+                    await message.Channel.SendMessageAsync($"{((message.Author as SocketGuildUser).Nickname == "" ? (message.Author as SocketGuildUser).GlobalName : (message.Author as SocketGuildUser).Nickname)} Sent: " + prevMesssage.orignalMessage.Content, messageReference: message.Reference);
+                    await message.DeleteAsync();
+                    await prevMesssage.fixedMessage.DeleteAsync();
+                }
                 return;
             }
             if (!message.Embeds.Any()) 
@@ -113,10 +122,17 @@ namespace FoSatTwitterBot.Modules
                     {
                         newMessageContent = newMessageContent.Replace(url, instagramURLs.First(instagramURL => instagramURL.Split(".com")[1] == url.Split(".com")[1]));
                     }
+
+                    var messageToRemove = messages.FirstOrDefault(msg => msg.orignalMessage.Author.Id == message.Author.Id && msg.orignalMessage.Channel.Id == message.Channel.Id);
+                    if (messageToRemove != default)
+                    {
+                        messages.Remove(messageToRemove);
+                    }
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
-                    await message.Channel.SendMessageAsync($"{((message.Author as SocketGuildUser).Nickname == "" ? (message.Author as SocketGuildUser).DisplayName : (message.Author as SocketGuildUser).Nickname)} Sent: " + newMessageContent, messageReference: message.Reference);
+                    var fixedMessage = await message.Channel.SendMessageAsync($"{((message.Author as SocketGuildUser).Nickname == "" ? (message.Author as SocketGuildUser).DisplayName : (message.Author as SocketGuildUser).Nickname)} Sent: " + newMessageContent, messageReference: message.Reference);
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 
+                    messages.Add((message, fixedMessage));
                     await message.DeleteAsync();
                 }
             }
