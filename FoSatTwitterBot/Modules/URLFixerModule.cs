@@ -27,7 +27,7 @@ namespace FoSatTwitterBot.Modules
                 if (prevMesssage != default)
                 {
                     messages.Remove(prevMesssage);
-                    await message.Channel.SendMessageAsync($"{((message.Author as SocketGuildUser).Nickname == "" ? (message.Author as SocketGuildUser).GlobalName : (message.Author as SocketGuildUser).Nickname)} Sent: " + prevMesssage.orignalMessage.Content, messageReference: message.Reference);
+                    await message.Channel.SendMessageAsync($"{(message.Author as SocketGuildUser).DisplayName} Sent: " + prevMesssage.orignalMessage.Content, messageReference: prevMesssage.orignalMessage.Reference);
                     await message.DeleteAsync();
                     await prevMesssage.fixedMessage.DeleteAsync();
                 }
@@ -129,7 +129,7 @@ namespace FoSatTwitterBot.Modules
                         messages.Remove(messageToRemove);
                     }
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
-                    var fixedMessage = await message.Channel.SendMessageAsync($"{((message.Author as SocketGuildUser).Nickname == "" ? (message.Author as SocketGuildUser).DisplayName : (message.Author as SocketGuildUser).Nickname)} Sent: " + newMessageContent, messageReference: message.Reference);
+                    var fixedMessage = await message.Channel.SendMessageAsync($"{(message.Author as SocketGuildUser).DisplayName} Sent: " + newMessageContent, messageReference: message.Reference);
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 
                     messages.Add((message, fixedMessage));
