@@ -44,7 +44,7 @@ namespace FoSatTwitterBot.Modules
             }
             try
             {
-                var twitterMatch = message.Embeds.Where(url => url.Url.Contains("x.com", StringComparison.CurrentCultureIgnoreCase) || url.Url.Contains("twitter.com", StringComparison.CurrentCultureIgnoreCase) 
+                var twitterMatch = message.Embeds.Where(url => (url.Url.Contains("x.com", StringComparison.CurrentCultureIgnoreCase) || url.Url.Contains("twitter.com", StringComparison.CurrentCultureIgnoreCase)) 
                     && !url.Url.Contains("fixupx.com", StringComparison.CurrentCultureIgnoreCase) && !url.Url.Contains("fxtwitter.com", StringComparison.CurrentCultureIgnoreCase));
                 var twitterURLs = new List<string>();
                 if (twitterMatch.Any())
@@ -89,7 +89,7 @@ namespace FoSatTwitterBot.Modules
                 {
                     foreach (var match in instagramMatch)
                     {
-                        instagramURLs.Add(match.Url.Replace("instagram.com", "ddinstagram.com"));
+                        instagramURLs.Add(match.Url.Replace("instagram.com", "instagramez.com"));
                     }
                 }
 
