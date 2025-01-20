@@ -12,6 +12,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Linq;
+using System.ComponentModel.DataAnnotations;
 
 namespace FoSatTwitterBot.Modules
 {
@@ -101,26 +102,29 @@ namespace FoSatTwitterBot.Modules
                     {
                         newSplitList.AddRange(space.Split('\n'));
                     }
-                    var urlToIgnore = newSplitList.Where(url => url.Contains("twitter.com", StringComparison.CurrentCultureIgnoreCase) || url.Contains("x.com", StringComparison.CurrentCultureIgnoreCase));
+                    var urlToIgnore = newSplitList.Where(url => url.Contains("twitter.com", StringComparison.CurrentCultureIgnoreCase) || url.Contains("x.com", StringComparison.CurrentCultureIgnoreCase)).Distinct();
                     var newMessageContent = message.Content;
                     foreach (var url in urlToIgnore)
                     {
-                        newMessageContent = newMessageContent.Replace(url, twitterURLs.First(twitterURL => twitterURL.Split(".com")[1] == url.Split(".com")[1]));
+                        var replaceContent = twitterURLs.First(twitterURL => twitterURL.Split(".com")[1] == url.Split(".com")[1]) + $"\n[Original Link](<{url}>) \n";
+                        newMessageContent = newMessageContent.Replace(url, replaceContent);
                     }
-                    var redditToIngore = newSplitList.Where(url => url.Contains("reddit.com", StringComparison.CurrentCultureIgnoreCase));
+                    var redditToIngore = newSplitList.Where(url => url.Contains("reddit.com", StringComparison.CurrentCultureIgnoreCase)).Distinct();
                     foreach (var url in redditToIngore)
                     {
-                        newMessageContent = newMessageContent.Replace(url, redditURLs.First(redditURL => redditURL.Split(".com")[1] == url.Split(".com")[1]));
+                        var replaceContent = redditURLs.First(redditURL => redditURL.Split(".com")[1] == url.Split(".com")[1]) + $"\n[Original Link](<{url}>) \n";
+                        newMessageContent = newMessageContent.Replace(url, replaceContent);
                     }
                     var eBayToIgnore = newSplitList.Where(url => url.Contains("ebay.com", StringComparison.CurrentCultureIgnoreCase));
                     foreach (var url in eBayToIgnore)
                     {
                         newMessageContent = newMessageContent.Replace(url, eBayURLs.First(eBayURL => url.Contains(eBayURL)));
                     }
-                    var instagramToIgnore = newSplitList.Where(url => url.Contains("instagram.com", StringComparison.CurrentCultureIgnoreCase));
+                    var instagramToIgnore = newSplitList.Where(url => url.Contains("instagram.com", StringComparison.CurrentCultureIgnoreCase)).Distinct();
                     foreach (var url in instagramToIgnore)
                     {
-                        newMessageContent = newMessageContent.Replace(url, instagramURLs.First(instagramURL => instagramURL.Split(".com")[1] == url.Split(".com")[1]));
+                        var replaceContent = instagramURLs.First(instagramURL => instagramURL.Split(".com")[1] == url.Split(".com")[1]) + $"\n[Original Link](<{url}>) \n";
+                        newMessageContent = newMessageContent.Replace(url, replaceContent);
                     }
 
                     var messageToRemove = messages.FirstOrDefault(msg => msg.orignalMessage.Author.Id == message.Author.Id && msg.orignalMessage.Channel.Id == message.Channel.Id);
