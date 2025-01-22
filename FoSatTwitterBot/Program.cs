@@ -7,8 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Net.NetworkInformation;
 
-Console.WriteLine("Hello, World!");
-
 var socketConfig = new DiscordSocketConfig
 {
     GatewayIntents = Discord.GatewayIntents.AllUnprivileged | Discord.GatewayIntents.MessageContent
@@ -19,7 +17,7 @@ var client = new DiscordSocketClient(socketConfig);
 using IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration(config =>
     {
-        config.AddJsonFile("C:\\Users\\Arvind\\source\\repos\\FoSatTwitterBot\\FoSatTwitterBot\\_config.json", false);       // Add the config file to IConfiguration variables
+        config.AddJsonFile(Directory.GetCurrentDirectory() + "/config.json", false);       // Add the config file to IConfiguration variables
     })
     .ConfigureServices(services =>
     {

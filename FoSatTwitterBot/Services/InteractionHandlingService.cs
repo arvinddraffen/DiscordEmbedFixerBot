@@ -22,7 +22,7 @@ namespace FoSatTwitterBot.Services
         private readonly IServiceProvider _services;
         private readonly IConfiguration _config;
         private readonly ILogger<InteractionService> _logger;
-        private readonly TwitterFixerModule _twitterFixerModule;
+        private readonly URLFixerModule _twitterFixerModule;
 
         public InteractionHandlingService(
             DiscordSocketClient discord,
@@ -36,7 +36,7 @@ namespace FoSatTwitterBot.Services
             _services = services;
             _config = config;
             _logger = logger;
-            _twitterFixerModule = new TwitterFixerModule();
+            _twitterFixerModule = new URLFixerModule();
 
             _interactions.Log += msg => LogUtility.Log(_logger, msg);
         }
@@ -84,7 +84,7 @@ namespace FoSatTwitterBot.Services
             }
             else
             {
-                await _twitterFixerModule.FixTwitterMessage(message);
+                await _twitterFixerModule.FixMessage(message);
             }
         }
     }
