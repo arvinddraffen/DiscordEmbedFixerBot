@@ -1,16 +1,11 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using FoSatTwitterBot.Utilities;
+using DiscordEmbedFixerBot.Utilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace FoSatTwitterBot.Services
+namespace DiscordEmbedFixerBot.Services
 {
     internal class StartupService : IHostedService
     {

@@ -1,11 +1,10 @@
-﻿// See https://aka.ms/new-console-template for more information
-using Discord.Interactions;
+﻿using Discord.Interactions;
 using Discord.WebSocket;
-using FoSatTwitterBot.Services;
+using DiscordEmbedFixerBot.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Net.NetworkInformation;
+using System.Reflection;
 
 var socketConfig = new DiscordSocketConfig
 {
@@ -17,7 +16,7 @@ var client = new DiscordSocketClient(socketConfig);
 using IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration(config =>
     {
-        config.AddJsonFile(Directory.GetCurrentDirectory() + "/config.json", false);       // Add the config file to IConfiguration variables
+        config.AddJsonFile(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "/config.json", false);       // Add the config file to IConfiguration variables
     })
     .ConfigureServices(services =>
     {

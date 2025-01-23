@@ -1,19 +1,14 @@
-﻿using Discord.Interactions;
+﻿using Discord;
+using Discord.Interactions;
 using Discord.WebSocket;
-using Discord;
+using DiscordEmbedFixerBot.Modules;
+using DiscordEmbedFixerBot.Utilities;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using FoSatTwitterBot.Utilities;
 using Microsoft.Extensions.Hosting;
-using FoSatTwitterBot.Modules;
+using Microsoft.Extensions.Logging;
+using System.Reflection;
 
-namespace FoSatTwitterBot.Services
+namespace DiscordEmbedFixerBot.Services
 {
     internal class InteractionHandlingService : IHostedService
     {

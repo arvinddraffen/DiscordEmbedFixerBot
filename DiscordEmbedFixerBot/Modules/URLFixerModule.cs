@@ -1,25 +1,13 @@
 ﻿using Discord;
-using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
-using Microsoft.Extensions.Logging;
-using Nager.PublicSuffix;
-using Nager.PublicSuffix.RuleProviders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Linq;
-using System.ComponentModel.DataAnnotations;
 
-namespace FoSatTwitterBot.Modules
+namespace DiscordEmbedFixerBot.Modules
 {
     [Discord.Interactions.RequireBotPermission(ChannelPermission.ManageMessages)]
     internal class URLFixerModule : InteractionModuleBase<SocketInteractionContext>
-    { 
-        List<(IMessage orignalMessage,IMessage fixedMessage)> messages = new List<(IMessage, IMessage)>();
+    {
+        List<(IMessage orignalMessage, IMessage fixedMessage)> messages = new List<(IMessage, IMessage)>();
         internal async Task FixMessage(IMessage message, int runCount = 0)
         {
             if (message.Content.Contains("$IGNORE$"))
@@ -34,18 +22,18 @@ namespace FoSatTwitterBot.Modules
                 }
                 return;
             }
-            if (!message.Embeds.Any()) 
-            { 
-                if (runCount < 5) 
+            if (!message.Embeds.Any())
+            {
+                if (runCount < 5)
                 {
                     await Task.Delay(1000);
-                    await FixMessage(await message.Channel.GetMessageAsync(message.Id), ++runCount); 
+                    await FixMessage(await message.Channel.GetMessageAsync(message.Id), ++runCount);
                 }
                 return;
             }
             try
             {
-                var twitterMatch = message.Embeds.Where(url => (url.Url.Contains("x.com", StringComparison.CurrentCultureIgnoreCase) || url.Url.Contains("twitter.com", StringComparison.CurrentCultureIgnoreCase)) 
+                var twitterMatch = message.Embeds.Where(url => (url.Url.Contains("x.com", StringComparison.CurrentCultureIgnoreCase) || url.Url.Contains("twitter.com", StringComparison.CurrentCultureIgnoreCase))
                     && !url.Url.Contains("fixupx.com", StringComparison.CurrentCultureIgnoreCase) && !url.Url.Contains("fxtwitter.com", StringComparison.CurrentCultureIgnoreCase));
                 var twitterURLs = new List<string>();
                 if (twitterMatch.Any())

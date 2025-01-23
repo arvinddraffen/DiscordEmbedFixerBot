@@ -1,12 +1,7 @@
 ﻿using Discord;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace FoSatTwitterBot.Utilities
+namespace DiscordEmbedFixerBot.Utilities
 {
     /// <summary>
     /// Handles logging for Discord.Net's log events.
