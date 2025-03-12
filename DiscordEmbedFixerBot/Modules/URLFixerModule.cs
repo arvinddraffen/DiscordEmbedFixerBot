@@ -88,7 +88,12 @@ namespace DiscordEmbedFixerBot.Modules
                     var newSplitList = new List<string>();
                     foreach (var space in spaceSplit)
                     {
-                        newSplitList.AddRange(space.Split('\n'));
+                        var possibleURL = space;
+                        if (space.EndsWith('\\'))
+                        {
+                            possibleURL = possibleURL.Remove(space.Length);
+                        }
+                        newSplitList.AddRange(possibleURL.Split('\n'));
                     }
                     var urlToIgnore = newSplitList.Where(url => url.Contains("twitter.com", StringComparison.CurrentCultureIgnoreCase) || url.Contains("x.com", StringComparison.CurrentCultureIgnoreCase)).Distinct();
                     var newMessageContent = message.Content;
