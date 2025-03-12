@@ -40,7 +40,7 @@ namespace DiscordEmbedFixerBot.Modules
                 {
                     foreach (var match in twitterMatch)
                     {
-                        var twitterURL = new string(match.Url);
+                        var twitterURL = new string(RemoveExtraCharacters(match.Url));
                         if (twitterURL.Contains("x.com"))
                         {
                             twitterURL = twitterURL.Replace("x.com", "fixupx.com");
@@ -58,7 +58,7 @@ namespace DiscordEmbedFixerBot.Modules
                 {
                     foreach (var match in redditMatch)
                     {
-                        redditURLs.Add(match.Url.Replace("reddit.com", "rxddit.com"));
+                        redditURLs.Add(RemoveExtraCharacters(match.Url).Replace("reddit.com", "rxddit.com"));
                     }
                 }
 
@@ -68,7 +68,7 @@ namespace DiscordEmbedFixerBot.Modules
                 {
                     foreach (var match in eBayMatch)
                     {
-                        eBayURLs.Add(match.Url.Substring(0, match.Url.IndexOf('?')));
+                        eBayURLs.Add(RemoveExtraCharacters(match.Url).Substring(0, match.Url.IndexOf('?')));
                     }
                 }
 
@@ -78,7 +78,7 @@ namespace DiscordEmbedFixerBot.Modules
                 {
                     foreach (var match in instagramMatch)
                     {
-                        instagramURLs.Add(match.Url.Replace("instagram.com", "instagramez.com"));
+                        instagramURLs.Add(RemoveExtraCharacters(match.Url).Replace("instagram.com", "instagramez.com"));
                     }
                 }
 
@@ -88,24 +88,20 @@ namespace DiscordEmbedFixerBot.Modules
                     var newSplitList = new List<string>();
                     foreach (var space in spaceSplit)
                     {
-                        var possibleURL = space;
-                        if (space.EndsWith('\\') || space.EndsWith("//"))
-                        {
-                            possibleURL = possibleURL.Remove(space.Length - 1);
-                        }
+                        var possibleURL = RemoveExtraCharacters(space);
                         newSplitList.AddRange(possibleURL.Split('\n'));
                     }
                     var urlToIgnore = newSplitList.Where(url => url.Contains("twitter.com", StringComparison.CurrentCultureIgnoreCase) || url.Contains("x.com", StringComparison.CurrentCultureIgnoreCase)).Distinct();
                     var newMessageContent = message.Content;
                     foreach (var url in urlToIgnore)
                     {
-                        var replaceContent = twitterURLs.First(twitterURL => twitterURL.Split(".com")[1] == url.Split(".com")[1]) + $"\n[Original Link](<{url}>) \n";
+                        var replaceContent = twitterURLs.First(twitterURL => url.Contains(twitterURL.Split(".com")[1])) + $"\n[Original Link](<{url}>) \n";
                         newMessageContent = newMessageContent.Replace(url, replaceContent);
                     }
                     var redditToIngore = newSplitList.Where(url => url.Contains("reddit.com", StringComparison.CurrentCultureIgnoreCase)).Distinct();
                     foreach (var url in redditToIngore)
                     {
-                        var replaceContent = redditURLs.First(redditURL => redditURL.Split(".com")[1] == url.Split(".com")[1]) + $"\n[Original Link](<{url}>) \n";
+                        var replaceContent = redditURLs.First(redditURL => url.Contains(redditURL.Split(".com")[1])) + $"\n[Original Link](<{url}>) \n";
                         newMessageContent = newMessageContent.Replace(url, replaceContent);
                     }
                     var eBayToIgnore = newSplitList.Where(url => url.Contains("ebay.com", StringComparison.CurrentCultureIgnoreCase));
@@ -116,7 +112,7 @@ namespace DiscordEmbedFixerBot.Modules
                     var instagramToIgnore = newSplitList.Where(url => url.Contains("instagram.com", StringComparison.CurrentCultureIgnoreCase)).Distinct();
                     foreach (var url in instagramToIgnore)
                     {
-                        var replaceContent = instagramURLs.First(instagramURL => instagramURL.Split(".com")[1] == url.Split(".com")[1]) + $"\n[Original Link](<{url}>) \n";
+                        var replaceContent = instagramURLs.First(instagramURL => url.Contains(instagramURL.Split(".com")[1])) + $"\n[Original Link](<{url}>) \n";
                         newMessageContent = newMessageContent.Replace(url, replaceContent);
                     }
 
@@ -137,6 +133,17 @@ namespace DiscordEmbedFixerBot.Modules
             {
                 Console.WriteLine("Not a valid URL schema to convert.");
             }
+        }
+
+        private string RemoveExtraCharacters(string input)
+        {
+            var output = input;
+            if (input.EndsWith('\\') || input.EndsWith("//"))
+            {
+                output = output.Remove(input.Length - 1);
+            }
+
+            return output;
         }
     }
 }
