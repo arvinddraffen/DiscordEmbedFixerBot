@@ -89,9 +89,9 @@ namespace DiscordEmbedFixerBot.Modules
                     foreach (var space in spaceSplit)
                     {
                         var possibleURL = space;
-                        if (space.EndsWith('\\'))
+                        if (space.EndsWith('\\') || space.EndsWith("//"))
                         {
-                            possibleURL = possibleURL.Remove(space.Length);
+                            possibleURL = possibleURL.Remove(space.Length - 1);
                         }
                         newSplitList.AddRange(possibleURL.Split('\n'));
                     }
