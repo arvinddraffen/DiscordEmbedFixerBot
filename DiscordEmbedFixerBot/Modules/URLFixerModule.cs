@@ -94,25 +94,38 @@ namespace DiscordEmbedFixerBot.Modules
                     var newMessageContent = message.Content;
                     foreach (var url in urlToIgnore)
                     {
-                        var replaceContent = twitterURLs.First(twitterURL => twitterURL.Split(".com")[1] == url.Split(".com")[1]) + $"\n[Original Link](<{url}>) \n";
-                        newMessageContent = newMessageContent.Replace(url, replaceContent);
+                        var replaceContent = twitterURLs.FirstOrDefault(twitterURL => twitterURL.Split(".com")[1] == url.Split(".com")[1]) + $"\n[Original Link](<{url}>) \n";
+                        if (replaceContent != default)
+                        {
+                            newMessageContent = newMessageContent.Replace(url, replaceContent);
+                        }
                     }
                     var redditToIngore = newSplitList.Where(url => url.Contains("reddit.com", StringComparison.CurrentCultureIgnoreCase)).Distinct();
                     foreach (var url in redditToIngore)
                     {
-                        var replaceContent = redditURLs.First(redditURL => redditURL.Split(".com")[1] == url.Split(".com")[1]) + $"\n[Original Link](<{url}>) \n";
-                        newMessageContent = newMessageContent.Replace(url, replaceContent);
+                        var replaceContent = redditURLs.FirstOrDefault(redditURL => redditURL.Split(".com")[1] == url.Split(".com")[1]) + $"\n[Original Link](<{url}>) \n";
+                        if (replaceContent != default)
+                        {
+                            newMessageContent = newMessageContent.Replace(url, replaceContent);
+                        }
                     }
                     var eBayToIgnore = newSplitList.Where(url => url.Contains("ebay.com", StringComparison.CurrentCultureIgnoreCase));
                     foreach (var url in eBayToIgnore)
                     {
-                        newMessageContent = newMessageContent.Replace(url, eBayURLs.First(eBayURL => url.Contains(eBayURL)));
+                        var replaceContent = eBayURLs.FirstOrDefault(eBayURL => url.Contains(eBayURL));
+                        if (replaceContent != default)
+                        {
+                            newMessageContent = newMessageContent.Replace(url, replaceContent);
+                        }
                     }
                     var instagramToIgnore = newSplitList.Where(url => url.Contains("instagram.com", StringComparison.CurrentCultureIgnoreCase)).Distinct();
                     foreach (var url in instagramToIgnore)
                     {
-                        var replaceContent = instagramURLs.First(instagramURL => instagramURL.Split(".com")[1] == url.Split(".com")[1]) + $"\n[Original Link](<{url}>) \n";
-                        newMessageContent = newMessageContent.Replace(url, replaceContent);
+                        var replaceContent = instagramURLs.FirstOrDefault(instagramURL => instagramURL.Split(".com")[1] == url.Split(".com")[1]) + $"\n[Original Link](<{url}>) \n";
+                        if (replaceContent != default)
+                        {
+                            newMessageContent = newMessageContent.Replace(url, replaceContent);
+                        }
                     }
 
                     var messageToRemove = messages.FirstOrDefault(msg => msg.orignalMessage.Author.Id == message.Author.Id && msg.orignalMessage.Channel.Id == message.Channel.Id);
