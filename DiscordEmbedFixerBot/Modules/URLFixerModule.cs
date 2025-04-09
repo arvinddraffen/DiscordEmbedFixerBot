@@ -58,7 +58,20 @@ namespace DiscordEmbedFixerBot.Modules
                 {
                     foreach (var match in redditMatch)
                     {
-                        redditURLs.Add(RemoveExtraCharacters(match.Url).Replace("reddit.com", "rxddit.com"));
+                        var redditURL = RemoveExtraCharacters(match.Url).Replace("reddit.com", "rxddit.com");
+                        if (redditURL.Contains("comments"))
+                        {
+                            var redditSplit = redditURL.Split('/');
+                            if (redditSplit.Length > 7)
+                            {
+                                redditURL = "";
+                                for (var i = 0; i < 8; i++)
+                                {
+                                    redditURL += redditSplit[i] + "/";
+                                }
+                            }
+                        }
+                        redditURLs.Add(redditURL);
                     }
                 }
 
